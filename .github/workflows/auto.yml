@@ -6,8 +6,9 @@ on:
   workflow_dispatch:
 
 env:
-  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+  CELLPHONES: ${{ secrets.CELLPHONES }}
+  PASSWORDS: ${{ secrets.PASSWORDS }}
+  WECHAT_BOT_URL: ${{ secrets.WECHAT_BOT_URL }}
 
 jobs:
   run-python-file:
@@ -26,6 +27,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Run your Python script
+      - name: Run the Python file
         run: |
-          python main.py
+          python run.py
