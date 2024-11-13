@@ -9,6 +9,10 @@ env:
   CELLPHONES: ${{ secrets.CELLPHONES }}
   PASSWORDS: ${{ secrets.PASSWORDS }}
   WECHAT_BOT_URL: ${{ secrets.WECHAT_BOT_URL }}
+  BARK_PUSH: ${{ secrets.BARK_PUSH }}
+  DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
+  DD_BOT_TOKEN: ${{ secrets.DD_BOT_TOKEN }}
+  # 添加其他推送服务的环境变量
 
 jobs:
   run-python-file:
