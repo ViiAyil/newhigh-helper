@@ -132,8 +132,8 @@ def daily_tasks(cellphone, password):
                 f"🎧 用户: {nickname}",
                 f"✅ 签到成功: +{signin_points} 鱼籽",
                 f"🗓️ 连续签到 {signin_continuoussign} 天",
-                f"🎉 抽奖获得 {lucky_draw_message}",
-                f"🎥 视频奖励 {video_points} 鱼籽",
+                f"🎁 抽奖获得 {lucky_draw_message}",
+                f"🎬 视频奖励 {video_points} 鱼籽",
                 f"💰 现有鱼籽： {total_points}",
             ]
             result_message = '\n'.join(result_text)
@@ -146,36 +146,54 @@ def daily_tasks(cellphone, password):
 
 # 读取配置文件
 def read_env(file_path="newhigh.env"):
-    if os.path.exists(file_path):
+    config = {}
+
+    # 从环境变量读取
+    print("🔍 正在读取环境变量")
+    cellphones_env = os.getenv("NH_CELLPHONES")
+    passwords_env = os.getenv("NH_PASSWORDS")
+
+    if cellphones_env and passwords_env:
+        # 分割环境变量内容
+        cellphones = cellphones_env.split(";")
+        passwords = passwords_env.split(";")
+
+        if len(cellphones) == len(passwords):
+            config = dict(zip(cellphones, passwords))
+            print(f"✔️ 从环境变量读取到 {len(config)} 个账户")
+        else:
+            print("❌ 环境变量中的手机号和密码数量不一致")
+            return {}
+
+    # 如果环境变量没有配置，则从文件读取
+    if not config and os.path.exists(file_path):
+        print("❌ 环境变量未设置")
         with open(file_path, "r", encoding="utf-8") as f:
-            config = {}
+            print("🔧 正在读取配置文件")
             for line in f:
-                # 跳过注释和空行
                 if line.strip() and not line.startswith("#"):
                     try:
-                        # 按照冒号分隔 phone 和 password
                         cellphone, password = line.strip().split(":", 1)
                         config[cellphone] = password
                     except ValueError:
                         print(f"❌ 配置项格式错误: {line.strip()}")
                         continue
-            return config
-    else:
+    elif not config:
         print(f"❌ 配置文件 {file_path} 不存在")
-        return {}
+
+    return config
 
 
 if __name__ == "__main__":
     print(f"{'='*20}")
-    print("🔍 正在读取配置文件")
 
     config = read_env()
 
     if not config:
-        print("❌ 配置文件为空或格式错误")
+        print("❌ 配置为空或格式错误")
         exit(1)
     else:
-        print(f"✅ 配置文件读取成功，找到 {len(config)} 个账户")
+        print(f"✔️ 配置文件读取成功，找到 {len(config)} 个账户")
         for phone, pwd in config.items():
             print(f"账号: {phone}, 密码: {pwd}")
 
@@ -188,8 +206,7 @@ if __name__ == "__main__":
         print("❌ 手机号和密码数量不一致，请检查配置文件。")
         exit(1)
 
-    print("✅ 配置文件读取成功")
-    print(f"👥 账号数量: {len(cellphones)}")
+    print(f"🔐 账号数量: {len(cellphones)}")
     print(f"{'='*20}\n")
 
     all_results = []  # 存储所有账户的结果
@@ -197,7 +214,8 @@ if __name__ == "__main__":
         result_message = daily_tasks(cellphone, password)
         all_results.append(result_message)
 
-    print("\n✅ 所有账户处理完毕 ✅")
+    print("\n🌈 所有账户处理完毕")
     final_message = '\n\n'.join(all_results)
+    print("\n🔔 正在推送任务结果")
     send('流海云印每日任务', final_message)
-    print("\n✅ 结果推送已完成 ✅")
+    print("\✔️ 结果推送已完成")

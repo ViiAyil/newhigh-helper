@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  CELLPHONES: ${{ secrets.CELLPHONES }}
-  PASSWORDS: ${{ secrets.PASSWORDS }}
+  NH_CELLPHONES: ${{ secrets.NH_CELLPHONES }}
+  NH_PASSWORDS: ${{ secrets.NH_PASSWORDS }}
   WECHAT_BOT_URL: ${{ secrets.WECHAT_BOT_URL }}
   BARK_PUSH: ${{ secrets.BARK_PUSH }}
   DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}

@@ -17,7 +17,7 @@
 python main.py
 ```
 
-### 2. 多账户任务（青龙部署）
+### 2. 多账户任务（自动化部署）
 
 ```bash
 python run.py
@@ -33,9 +33,20 @@ python resetPwd.py
 
 ### 1. 配置多个账号密码
 
-你需要创建一个 `newhigh.env` 文件，按如下格式填写你的账号和密码：
+你需要自行在部署平台（如青龙面板、Github Action）中创建环境变量
+```
+  NH_CELLPHONES: phone1;phone2;phone3
+  NH_PASSWORDS: pwd1;pwd2;pwd3
+  BARK_PUSH: # bark IP 或设备码，例：https://api.day.app/DxHcxxxxxRxxxxxxcm/
+  ...其他你需要的推送渠道的环境变量
+```
+
+或创建一个 `newhigh.env` 文件，按如下格式填写你的账号和密码：
+
+
 
 ```
+# newhign.env
 phone1:password1
 phone2:password2
 phone3:password3
