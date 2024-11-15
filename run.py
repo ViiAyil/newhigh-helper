@@ -144,35 +144,60 @@ def daily_tasks(cellphone, password):
     else:
         return "❌ 登录失败，请检查手机号和密码。"
 
+# 读取配置文件
+def read_env(file_path="newhigh.env"):
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            config = {}
+            for line in f:
+                # 跳过注释和空行
+                if line.strip() and not line.startswith("#"):
+                    try:
+                        # 按照冒号分隔 phone 和 password
+                        cellphone, password = line.strip().split(":", 1)
+                        config[cellphone] = password
+                    except ValueError:
+                        print(f"❌ 配置项格式错误: {line.strip()}")
+                        continue
+            return config
+    else:
+        print(f"❌ 配置文件 {file_path} 不存在")
+        return {}
+
 
 if __name__ == "__main__":
     print(f"{'='*20}")
-    print("🔍 正在读取环境变量")
-    cellphones_list = os.getenv("NH_CELLPHONES")
-    passwords_list = os.getenv("NH_PASSWORDS")
+    print("🔍 正在读取配置文件")
 
-    if not cellphones_list or not passwords_list:
-        print("❌ 环境变量 NH_CELLPHONES 或 NH_PASSWORDS 未设置。")
-        print(f"{'='*20}\n")
+    config = read_env()
+
+    if not config:
+        print("❌ 配置文件为空或格式错误")
         exit(1)
     else:
-        cellphone_list = cellphones_list.split(';')
-        password_list = passwords_list.split(';')
+        print(f"✅ 配置文件读取成功，找到 {len(config)} 个账户")
+        for phone, pwd in config.items():
+            print(f"账号: {phone}, 密码: {pwd}")
 
-        if len(cellphone_list) != len(password_list):
-            print("❌ 手机号和密码的数量不匹配。")
-            print(f"{'='*20}\n")
-        else:
-            all_results = []  # 存储所有账户的结果
-            user_num = len(cellphone_list)
-            print("✅ 环境变量读取成功")
-            print(f"👥 账号数量: {user_num}")
-            print(f"{'='*20}\n")
-            for cellphone, password in zip(cellphone_list, password_list):
-                result_message = daily_tasks(cellphone, password)
-                all_results.append(result_message)
+    # 获取配置中的所有手机号和密码
+    cellphones = list(config.keys())
+    passwords = list(config.values())
 
-            print("\n✅ 所有账户处理完毕 ✅")
-            final_message = '\n\n'.join(all_results)
-            send('流海云印每日任务', final_message)
-            print("\n✅ 结果推送已完成 ✅")
+    # 检查手机号和密码数量是否一致
+    if len(cellphones) != len(passwords):
+        print("❌ 手机号和密码数量不一致，请检查配置文件。")
+        exit(1)
+
+    print("✅ 配置文件读取成功")
+    print(f"👥 账号数量: {len(cellphones)}")
+    print(f"{'='*20}\n")
+
+    all_results = []  # 存储所有账户的结果
+    for cellphone, password in zip(cellphones, passwords):
+        result_message = daily_tasks(cellphone, password)
+        all_results.append(result_message)
+
+    print("\n✅ 所有账户处理完毕 ✅")
+    final_message = '\n\n'.join(all_results)
+    send('流海云印每日任务', final_message)
+    print("\n✅ 结果推送已完成 ✅")
