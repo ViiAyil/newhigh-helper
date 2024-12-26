@@ -147,17 +147,18 @@ def daily_tasks(cellphone, password):
 # 读取配置文件
 def read_env(file_path="newhigh.env"):
     config = {}
+    # 获取当前脚本的目录
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # 构造配置文件的绝对路径
+    abs_file_path = os.path.join(script_dir, file_path)
 
-    # 从环境变量读取
     print("🔍 正在读取环境变量")
     cellphones_env = os.getenv("NH_CELLPHONES")
     passwords_env = os.getenv("NH_PASSWORDS")
-
     if cellphones_env and passwords_env:
         # 分割环境变量内容
         cellphones = cellphones_env.split(";")
         passwords = passwords_env.split(";")
-
         if len(cellphones) == len(passwords):
             config = dict(zip(cellphones, passwords))
             print(f"✔️ 从环境变量读取到 {len(config)} 个账户")
@@ -166,9 +167,9 @@ def read_env(file_path="newhigh.env"):
             return {}
 
     # 如果环境变量没有配置，则从文件读取
-    if not config and os.path.exists(file_path):
+    if not config and os.path.exists(abs_file_path):
         print("❌ 环境变量未设置")
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(abs_file_path, "r", encoding="utf-8") as f:
             print("🔧 正在读取配置文件")
             for line in f:
                 if line.strip() and not line.startswith("#"):
@@ -179,8 +180,7 @@ def read_env(file_path="newhigh.env"):
                         print(f"❌ 配置项格式错误: {line.strip()}")
                         continue
     elif not config:
-        print(f"❌ 配置文件 {file_path} 不存在")
-
+        print(f"❌ 配置文件 {abs_file_path} 不存在")
     return config
 
 
